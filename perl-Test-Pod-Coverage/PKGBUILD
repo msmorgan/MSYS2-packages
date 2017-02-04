@@ -1,0 +1,25 @@
+_realname=Test-Pod-Coverage
+pkgname=perl-${_realname}
+pkgver=1.10
+pkgrel=1
+pkgdesc="CPAN Test::Pod::Coverage module"
+arch=('any')
+url="http://search.cpan.org/dist/${_realname}"
+license=('PerlArtistic')
+depends=('perl-Pod-Coverage')
+options=(!emptydirs)
+source=("http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/${_realname}-$pkgver.tar.gz")
+sha256sums=('48c9cca9f7d99eee741176445b431adf09c029e1aa57c4703c9f46f7601d40d4')
+
+build() {
+  cd  "$srcdir"/${_realname}-$pkgver
+  PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd  "$srcdir"/${_realname}-$pkgver
+  make install DESTDIR="$pkgdir"
+  find "$pkgdir" -name '.packlist' -delete
+  find "$pkgdir" -name '*.pod' -delete
+}
