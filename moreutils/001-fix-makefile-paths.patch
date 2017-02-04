@@ -1,0 +1,38 @@
+From 31cad362e8e8ae2bdad2ce3a8054554065663728 Mon Sep 17 00:00:00 2001
+From: Michael Morgan <morgan.michael@me.com>
+Date: Fri, 3 Feb 2017 22:19:12 -0600
+Subject: [PATCH] fix-makefile-paths
+
+---
+ Makefile | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 2241fd7..5dca936 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,13 +5,10 @@ CFLAGS?=-O2 -g -Wall
+ INSTALL_BIN?=install -s
+ PREFIX?=/usr
+ 
+-ifneq (,$(findstring CYGWIN,$(shell uname)))
+-	DOCBOOKXSL?=/usr/share/sgml/docbook/xsl-stylesheets
+-else
+-	DOCBOOKXSL?=/usr/share/xml/docbook/stylesheet/docbook-xsl
+-endif
++DOCBOOKXSL?=/usr/share/xml/docbook/xsl-stylesheets-1.78.1
+ 
+ DOCBOOK2XMAN=xsltproc --param man.authors.section.enabled 0 $(DOCBOOKXSL)/manpages/docbook.xsl
++POD2MAN=perl /usr/bin/core_perl/pod2man
+ 
+ all: $(BINS) $(MANS)
+ 
+@@ -47,4 +44,4 @@ errno.1: errno.docbook
+ 	$(DOCBOOK2XMAN) $<
+ 
+ %.1: %
+-	pod2man --center=" " --release="moreutils" $< > $@;
++	$(POD2MAN) --center=" " --release="moreutils" $< > $@;
+-- 
+2.11.0
+

@@ -1,0 +1,35 @@
+pkgname=moreutils
+pkgver=0.60
+pkgrel=1
+pkgdesc="A growing collection of the unix tools that nobody thought to write thirty years ago"
+arch=('i686' 'x86_64')
+url="http://joeyh.name/code/moreutils/"
+license=('GPL')
+depends=('perl' 'perl-IPC-Run' 'perl-TimeDate' 'perl-Time-Duration')
+makedepends=('docbook-xsl' 'docbook-xml' 'perl-XML-SAX' 'git')
+options=('!emptydirs' 'zipman')
+replaces=(moreutils-svn)
+#source=(http://ftp.de.debian.org/debian/pool/main/m/moreutils/moreutils_$pkgver.orig.tar.gz)
+source=("git://git.kitenet.net/moreutils.git#tag=$pkgver"
+        001-fix-makefile-paths.patch)
+sha256sums=('SKIP'
+            '89c7fb1eb71493521121f7a808af2f0e164cf76741257b37d6b0408de1a1455d')
+
+prepare() {
+  cd "${srcdir}/${pkgname}"
+  patch -p1 -i "${srcdir}/001-fix-makefile-paths.patch"
+}
+
+build() {
+  cd "$srcdir"/$pkgname
+  make # DOCBOOK2XMAN=docbook2man
+}
+
+package() {
+  cd "$srcdir"/$pkgname
+  make PREFIX="$pkgdir"/usr install
+  chmod 0644 "$pkgdir"/usr/share/man/man1/*
+  mv "$pkgdir"/usr/share/man/man1/ts.1 "$pkgdir"/usr/share/man/man1/ts.1moreutils
+  mv "$pkgdir"/usr/share/man/man1/parallel.1 "$pkgdir"/usr/share/man/man1/parallel-moreutils.1
+  mv "$pkgdir"/usr/bin/parallel "$pkgdir"/usr/bin/parallel-moreutils
+}
