@@ -1,0 +1,25 @@
+_realname=Devel-Symdump
+pkgname=perl-${_realname}
+pkgver=2.17
+pkgrel=1
+pkgdesc="Perl symbol table access and dumping"
+arch=('any')
+url="http://search.cpan.org/dist/${_realname}"
+license=('GPL' 'PerlArtistic')
+depends=('perl>=5.10.0')
+options=('!emptydirs')
+source=(http://www.cpan.org/authors/id/A/AN/ANDK/${_realname}-$pkgver.tar.gz)
+sha256sums=('2c50fc7935e6e6200b74fbb9149c8078ee8f92788d2a9c5ab25c9ebace946e62')
+
+build() {
+  cd  "$srcdir"/${_realname}-$pkgver
+  PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd  "$srcdir"/${_realname}-$pkgver
+  make install DESTDIR="$pkgdir"
+  find "$pkgdir" -name '.packlist' -delete
+  find "$pkgdir" -name '*.pod' -delete
+}
