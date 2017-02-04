@@ -1,0 +1,25 @@
+pkgname=perl-IPC-Run
+pkgver=0.94
+pkgrel=1
+pkgdesc="IPC::Run - system() and background procs w/ piping, redirs, ptys"
+arch=('any')
+url="http://search.cpan.org/dist/IPC-Run"
+license=('GPL' 'PerlArtistic')
+# IPC::Run depends on IO::Pty which is provided by perl-IO-Tty
+depends=('perl>=5.10.0' 'perl-IO-Tty')
+options=('!emptydirs')
+source=("http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/IPC-Run-$pkgver.tar.gz")
+sha256sums=('2eb336c91a2b7ea61f98e5b2282d91020d39a484f16041e2365ffd30f8a5605b')
+
+build() {
+  cd "$srcdir"/IPC-Run-$pkgver
+  PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd "$srcdir"/IPC-Run-$pkgver
+  make install DESTDIR="$pkgdir"
+  find "$pkgdir" -name perllocal.pod -delete
+  find "$pkgdir" -name .packlist -delete
+}
